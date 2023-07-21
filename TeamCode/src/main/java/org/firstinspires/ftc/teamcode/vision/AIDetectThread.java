@@ -43,5 +43,4 @@ public class AIDetectThread extends Thread {
 
     }
 
-
 }
