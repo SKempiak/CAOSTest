@@ -15,7 +15,7 @@ public class OnnxPipeline extends OpenCvPipeline {
 
     @Override
         public Mat processFrame(Mat input) {
-        detectObject = processor.getObjectsInFrame(input, false);
+        detectObject = processor.getObjectsInFrame(input, 0.2);
         for (DnnObject obj: detectObject)
         {
             Imgproc.rectangle(input,obj.getLeftBottom(),obj.getRightTop(),new Scalar(255,0,0),1);

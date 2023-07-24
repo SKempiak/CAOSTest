@@ -22,39 +22,19 @@ public class DnnObject {
         return objectClassId;
     }
 
-    public void setObjectClassId(int objectClassId) {
-        this.objectClassId = objectClassId;
-    }
-
     public String getObjectName() {
         return objectName;
-    }
-
-    public void setObjectName(String objectName) {
-        this.objectName = objectName;
     }
 
     public Point getLeftBottom() {
         return leftBottom;
     }
 
-    public void setLeftBottom(Point leftBottom) {
-        this.leftBottom = leftBottom;
-    }
-
     public Point getRightTop() {
         return rightTop;
     }
 
-    public void setRightTop(Point rightTop) {
-        this.rightTop = rightTop;
-    }
-
     public Point getCenterCoordinate() {
         return centerCoordinate;
-    }
-
-    public void setCenterCoordinate(Point centerCoordinate) {
-        this.centerCoordinate = centerCoordinate;
     }
 }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import org.firstinspires.ftc.teamcode.vision.vizTurret.Constants;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
@@ -27,13 +28,13 @@ public class DeepNeuralNetworkProcessor {
         this.net = Dnn.readNetFromONNX(model);
     }
 
+    public int getObjectCount(Mat frame, String objectName, double threshold) {
 
-    public int getObjectCount(Mat frame, boolean isGrayFrame, String objectName) {
-
-        int inWidth = 320;
-        int inHeight = 240;
-        double inScaleFactor = 0.007843;
-        double thresholdDnn =  0.2;
+        int inWidth = Constants.CAMERA_WIDTH;
+        int inHeight = Constants.CAMERA_HEIGHT;
+        //0.007843
+        double inScaleFactor = 0.07843;
+        double thresholdDnn =  threshold;
         double meanVal = 127.5;
 
         int personObjectCount = 0;
@@ -42,9 +43,6 @@ public class DeepNeuralNetworkProcessor {
 
 
         try {
-            if (isGrayFrame)
-                Imgproc.cvtColor(frame, frame, Imgproc.COLOR_GRAY2RGB);
-
             blob = Dnn.blobFromImage(frame, inScaleFactor,
                     new Size(inWidth, inHeight),
                     new Scalar(meanVal, meanVal, meanVal),
@@ -70,7 +68,7 @@ public class DeepNeuralNetworkProcessor {
         return personObjectCount;
     }
 
-    public List<DnnObject> getObjectsInFrame(Mat frame, boolean isGrayFrame) {
+    public List<DnnObject> getObjectsInFrame(Mat frame, double threshold) {
 
         int inWidth = 320;
         int inHeight = 240;
@@ -86,8 +84,6 @@ public class DeepNeuralNetworkProcessor {
         int rows = frame.rows();
 
         try {
-            if (isGrayFrame)
-                Imgproc.cvtColor(frame, frame, Imgproc.COLOR_GRAY2RGB);
 
             blob = Dnn.blobFromImage(frame, inScaleFactor,
                     new Size(inWidth, inHeight),

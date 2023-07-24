@@ -7,7 +7,7 @@ import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCamera;
 
 @TeleOp()
-public class imageMaker extends OpMode {
+public class OnnxTestImplementation extends OpMode {
     OpenCvCamera camera;
 
     // Store image as 2D matrix
