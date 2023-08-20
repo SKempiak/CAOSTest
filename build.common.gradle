@@ -49,6 +49,7 @@ android {
 
     aaptOptions {
         noCompress "tflite"
+        noCompress "onnx"
     }
 
     defaultConfig {

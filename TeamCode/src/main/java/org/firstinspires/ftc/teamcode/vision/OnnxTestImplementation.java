@@ -5,6 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCamera;
+//q: Why is the file unreachable? Is android compressing the onnx file? Why does it have to be in the assets folder? Why does it need to be in an asset folder?
+
+
+
 
 @TeleOp()
 public class OnnxTestImplementation extends OpMode {

@@ -29,8 +29,9 @@ public class AIDetectThread extends Thread {
         {
             @Override
             public void onOpened()
+
             {
-                camera.startStreaming(Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                camera.startStreaming(Constants.CAMERA_WIDTH, Constants.CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override

@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.vision.vizTurret;
 public class Constants {
 
     public static final int FOV = 55;
-    public static final int CAMERA_WIDTH = 720;
-    public static final int CAMERA_HEIGHT = 405;
+    public static final int CAMERA_WIDTH = 640;
+    public static final int CAMERA_HEIGHT = 360;
 
     //x,y,z
     public static final double[] CAMERA_OFFSETS = {1.5, 2.4, 8.5};

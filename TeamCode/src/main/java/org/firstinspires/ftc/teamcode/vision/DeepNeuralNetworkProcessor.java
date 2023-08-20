@@ -14,12 +14,43 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+//to put a file to a specific location:
+//first: We need to use shell to see file contents.
+//adb shell
+//inside of shell, do ls to find the directory you want to put the file in.
+//NOTE: If we need to make a file,
+//adb push myfile.txt /sdcard/myfile.txt
 
+//upon further research, the best bet might be to do adb push folderWithModel /sdcard/FIRST/folderWithModel
+//or
+//just put it into models: adb push objectDetection.onnx /sdcard/FIRST/models/objectDetection.onnx
+
+
+//go to Android Sdk then 'platform-tools' path on your Terminal or Console
+//
+//(on mac, default path is : /Users/USERNAME/Library/Android/sdk/platform-tools)
+//
+//To check the SDCards(External and Internal) installed on your device fire these commands :
+//
+//1) ./adb shell (hit return/enter)
+//2) cd -(hit return/enter)
+//now you will see the list of Directories and files from your android device there you may find /sdcard as well as /storage
+//
+//3) cd /storage (hit return/enter)
+//4) ls (hit return/enter)
+//you may see sdcard0 (generally sdcard0 is internal storage) and sdcard1 (if External SDCard is present)
+//
+//5) exit (hit return/enter)
+//to come out of adb shell
+//
+//6) ./adb push '/Users/SML/Documents/filename.zip' /storage/sdcard0/path_to_store/ (hit return/enter)
+
+//https://stackoverflow.com/questions/20834241/how-to-use-adb-command-to-push-a-file-on-device-without-sd-card
 
 public class DeepNeuralNetworkProcessor {
     private final static Logger LOGGER = LoggerFactory.getLogger(DeepNeuralNetworkProcessor.class);
     private Net net;
-    private final String model = "FtcRobotController/assets/rubix-ball.onnx";
+    private final String model = "/sdcard/FIRST/models/rubix-ball.onnx";
 
     private final String[] classNames = {"rubix","ball"};
 
@@ -71,13 +102,13 @@ public class DeepNeuralNetworkProcessor {
     public List<DnnObject> getObjectsInFrame(Mat frame, double threshold) {
 
         int inWidth = 320;
-        int inHeight = 240;
+        int inHeight = 320;
         double inScaleFactor = 0.007843;
         double thresholdDnn =  0.2;
         double meanVal = 127.5;
 
-        Mat blob = null;
-        Mat detections = null;
+//        Mat blob = null;
+//        Mat detections = null;
         List<DnnObject> objectList = new ArrayList<>();
 
         int cols = frame.cols();
@@ -85,31 +116,31 @@ public class DeepNeuralNetworkProcessor {
 
         try {
 
-            blob = Dnn.blobFromImage(frame, inScaleFactor,
+            frame = Dnn.blobFromImage(frame, inScaleFactor,
                     new Size(inWidth, inHeight),
                     new Scalar(meanVal, meanVal, meanVal),
                     false, false);
 
-            net.setInput(blob);
-            detections = net.forward();
-            detections = detections.reshape(1, (int) detections.total() / 7);
+            net.setInput(frame);
+            frame = net.forward();
+            frame = frame.reshape(1, (int) frame.total() / 7);
 
             //all detected objects
-            for (int i = 0; i < detections.rows(); ++i) {
-                double confidence = detections.get(i, 2)[0];
+            for (int i = 0; i < frame.rows(); ++i) {
+                double confidence = frame.get(i, 2)[0];
 
                 if (confidence < thresholdDnn)
                     continue;
 
-                int classId = (int) detections.get(i, 1)[0];
+                int classId = (int) frame.get(i, 1)[0];
 
                 //calculate position
-                int xLeftBottom = (int) (detections.get(i, 3)[0] * cols);
-                int yLeftBottom = (int) (detections.get(i, 4)[0] * rows);
+                int xLeftBottom = (int) (frame.get(i, 3)[0] * cols);
+                int yLeftBottom = (int) (frame.get(i, 4)[0] * rows);
                 Point leftPosition = new Point(xLeftBottom, yLeftBottom);
 
-                int xRightTop = (int) (detections.get(i, 5)[0] * cols);
-                int yRightTop = (int) (detections.get(i, 6)[0] * rows);
+                int xRightTop = (int) (frame.get(i, 5)[0] * cols);
+                int yRightTop = (int) (frame.get(i, 6)[0] * rows);
                 Point rightPosition = new Point(xRightTop, yRightTop);
 
                 float centerX = (float) (xLeftBottom + xRightTop) / 2;
