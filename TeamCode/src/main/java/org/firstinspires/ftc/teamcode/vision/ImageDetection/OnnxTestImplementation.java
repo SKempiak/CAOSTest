@@ -36,6 +36,6 @@ public class OnnxTestImplementation extends OpMode {
         telemetry.addData("Current detections", OnnxPipeline.detectObject.toString());
         for(DnnObject obj : OnnxPipeline.detectObject)
             telemetry.addData("Detection" ,obj.getCenterCoordinate().x + "," + obj.getCenterCoordinate().y );
-
+        telemetry.update();
     }
 }
