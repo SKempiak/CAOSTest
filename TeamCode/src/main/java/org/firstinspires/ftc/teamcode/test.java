@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.vision.AIDetectThread;
-import org.firstinspires.ftc.teamcode.vision.DnnObject;
-import org.firstinspires.ftc.teamcode.vision.OnnxPipeline;
+import org.firstinspires.ftc.teamcode.vision.ImageDetection.DnnObject;
+import org.firstinspires.ftc.teamcode.vision.ImageDetection.OnnxPipeline;
 import org.firstinspires.ftc.teamcode.vision.vizTurret.Constants;
 import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCamera;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.vision.ImageDetection;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

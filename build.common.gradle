@@ -125,3 +125,6 @@ android {
 repositories {
 }
 
+dependencies {
+    implementation 'org.ftclib.ftclib:core:2.1.1'
+}
