@@ -10,22 +10,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.Utilities.Side;
 import org.firstinspires.ftc.teamcode.vision.vizTurret.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//TODO: write offset methods for the different tags.
+//TODO: Write a class/subclass/method that searches for the tag we want to correlate spikes to the pixel on the board.
 public class AprilTagLocalization {
     //current robot position.
     double x = 0;
     double y = 0;
     double h = 0;
 
-    //account for the cameras position, subtract as necessary.
-    double cameraX = 1;
-    double cameraY = 0;
-    double cameraH = 0;
 
     ArrayList<Double> allX = new ArrayList<>();
     ArrayList<Double> allY = new ArrayList<>();
@@ -40,6 +38,9 @@ public class AprilTagLocalization {
     }
 
     public void localize() {
+        allX.clear();
+        allY.clear();
+        allH.clear();
         locFrom = apriltag.getCameraDetections();
         for (AprilTagDetection detection : locFrom) {
             if (AprilTagReviewer.TagFamily.contains(detection.id)) {
@@ -47,16 +48,22 @@ public class AprilTagLocalization {
                 Orientation rot = Orientation.getOrientation(detection.rawPose.R, AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
                 //position like odometry
                 //removed the z axis to streamline performance. Also with the assumption its unnecessary.
+
+//                x=detection.ftcPose.x;
+//                y=detection.ftcPose.y;
+//                h=detection.ftcPose.yaw;
+
                 allX.add(detection.ftcPose.x);
                 allY.add(detection.ftcPose.y);
                 //rotation? pitch, roll, yaw
                 //y is assumed as the yaw(heading)
                 allH.add(detection.ftcPose.yaw);
+                accountOffsets(detection.id);
             }
 
         }
+
         calculateAverage();
-        setCorrectedPos();
     }
 
     private void calculateAverage() {
@@ -75,34 +82,148 @@ public class AprilTagLocalization {
                     .orElse(0.0);
         }
     }
-    private void accountCamLocation() {
-        x -= cameraX;
-        y -= cameraY;
-        h -= cameraH;
+    private void accountOffsets(int tagNum) {
+        //checks if side is red. If not, it is blue.
+        if (Side.getSide().equals("red")) {
+            switch (tagNum) {
+                //blue backdrop
+                case 1:
+                    x += FieldLocConstants.RED_BLUE_BACKDROP_LEFT[0];
+                    y += FieldLocConstants.RED_BLUE_BACKDROP_LEFT[1];
+                    h += FieldLocConstants.RED_BLUE_BACKDROP_LEFT[2];
+                    break;
+                case 2:
+                    x += FieldLocConstants.RED_BLUE_BACKDROP_MIDDLE[0];
+                    y += FieldLocConstants.RED_BLUE_BACKDROP_MIDDLE[1];
+                    h += FieldLocConstants.RED_BLUE_BACKDROP_MIDDLE[2];
+                    break;
+                case 3:
+                    x += FieldLocConstants.RED_BLUE_BACKDROP_RIGHT[0];
+                    y += FieldLocConstants.RED_BLUE_BACKDROP_RIGHT[1];
+                    h += FieldLocConstants.RED_BLUE_BACKDROP_RIGHT[2];
+                    break;
+
+                //red backdrop
+                case 4:
+                    x += FieldLocConstants.RED_RED_BACKDROP_LEFT[0];
+                    y += FieldLocConstants.RED_RED_BACKDROP_LEFT[1];
+                    h += FieldLocConstants.RED_RED_BACKDROP_LEFT[2];
+                    break;
+                case 5:
+                    x += FieldLocConstants.RED_RED_BACKDROP_MIDDLE[0];
+                    y += FieldLocConstants.RED_RED_BACKDROP_MIDDLE[1];
+                    h += FieldLocConstants.RED_RED_BACKDROP_MIDDLE[2];
+                    break;
+                case 6:
+                    x += FieldLocConstants.RED_RED_BACKDROP_RIGHT[0];
+                    y += FieldLocConstants.RED_RED_BACKDROP_RIGHT[1];
+                    h += FieldLocConstants.RED_RED_BACKDROP_RIGHT[2];
+                    break;
+
+                //blue Atag
+                case 9:
+                    x += FieldLocConstants.RED_BLUE_APRILTAG_SMALL[0];
+                    y += FieldLocConstants.RED_BLUE_APRILTAG_SMALL[1];
+                    h += FieldLocConstants.RED_BLUE_APRILTAG_SMALL[2];
+                    break;
+                case 10:
+                    x += FieldLocConstants.RED_BLUE_APRILTAG_LARGE[0];
+                    y += FieldLocConstants.RED_BLUE_APRILTAG_LARGE[1];
+                    h += FieldLocConstants.RED_BLUE_APRILTAG_LARGE[2];
+                    break;
+
+                //red Atag
+                case 7:
+                    x += FieldLocConstants.RED_RED_APRILTAG_SMALL[0];
+                    y += FieldLocConstants.RED_RED_APRILTAG_SMALL[1];
+                    h += FieldLocConstants.RED_RED_APRILTAG_SMALL[2];
+                    break;
+                case 8:
+                    x += FieldLocConstants.RED_RED_APRILTAG_LARGE[0];
+                    y += FieldLocConstants.RED_RED_APRILTAG_LARGE[1];
+                    h += FieldLocConstants.RED_RED_APRILTAG_LARGE[2];
+                    break;
+            }
+        } else {
+            switch (tagNum) {
+                //blue backdrop
+                case 1:
+                    x += FieldLocConstants.BLUE_BLUE_BACKDROP_LEFT[0];
+                    y += FieldLocConstants.BLUE_BLUE_BACKDROP_LEFT[1];
+                    h += FieldLocConstants.BLUE_BLUE_BACKDROP_LEFT[2];
+                    break;
+                case 2:
+                    x += FieldLocConstants.BLUE_BLUE_BACKDROP_MIDDLE[0];
+                    y += FieldLocConstants.BLUE_BLUE_BACKDROP_MIDDLE[1];
+                    h += FieldLocConstants.BLUE_BLUE_BACKDROP_MIDDLE[2];
+                    break;
+                case 3:
+                    x += FieldLocConstants.BLUE_BLUE_BACKDROP_RIGHT[0];
+                    y += FieldLocConstants.BLUE_BLUE_BACKDROP_RIGHT[1];
+                    h += FieldLocConstants.BLUE_BLUE_BACKDROP_RIGHT[2];
+                    break;
+
+                //red backdrop
+                case 4:
+                    x += FieldLocConstants.BLUE_RED_BACKDROP_LEFT[0];
+                    y += FieldLocConstants.BLUE_RED_BACKDROP_LEFT[1];
+                    h += FieldLocConstants.BLUE_RED_BACKDROP_LEFT[2];
+                    break;
+                case 5:
+                    x += FieldLocConstants.BLUE_RED_BACKDROP_MIDDLE[0];
+                    y += FieldLocConstants.BLUE_RED_BACKDROP_MIDDLE[1];
+                    h += FieldLocConstants.BLUE_RED_BACKDROP_MIDDLE[2];
+                    break;
+                case 6:
+                    x += FieldLocConstants.BLUE_RED_BACKDROP_RIGHT[0];
+                    y += FieldLocConstants.BLUE_RED_BACKDROP_RIGHT[1];
+                    h += FieldLocConstants.BLUE_RED_BACKDROP_RIGHT[2];
+                    break;
+
+                //blue Atag
+                case 9:
+                    x += FieldLocConstants.BLUE_BLUE_APRILTAG_SMALL[0];
+                    y += FieldLocConstants.BLUE_BLUE_APRILTAG_SMALL[1];
+                    h += FieldLocConstants.BLUE_BLUE_APRILTAG_SMALL[2];
+                    break;
+                case 10:
+                    x += FieldLocConstants.BLUE_BLUE_APRILTAG_LARGE[0];
+                    y += FieldLocConstants.BLUE_BLUE_APRILTAG_LARGE[1];
+                    h += FieldLocConstants.BLUE_BLUE_APRILTAG_LARGE[2];
+                    break;
+
+                //red Atag
+                case 7:
+                    x += FieldLocConstants.BLUE_RED_APRILTAG_SMALL[0];
+                    y += FieldLocConstants.BLUE_RED_APRILTAG_SMALL[1];
+                    h += FieldLocConstants.BLUE_RED_APRILTAG_SMALL[2];
+                    break;
+                case 8:
+                    x += FieldLocConstants.BLUE_RED_APRILTAG_LARGE[0];
+                    y += FieldLocConstants.BLUE_RED_APRILTAG_LARGE[1];
+                    h += FieldLocConstants.BLUE_RED_APRILTAG_LARGE[2];
+                    break;
+            }
+        }
     }
 
-    public Pose2d getPose() {
+    public List<AprilTagDetection> getDetections() {
+        return locFrom;
+    }
+
+    public Pose2d getPose () {
         return new Pose2d(x, y, new Rotation2d(h));
     }
-
-
-    private void setCorrectedPos() {
-        //correct for camera location
-        x += Constants.CAMERA_OFFSETS[0];
-        y += Constants.CAMERA_OFFSETS[1];
-        h += Constants.CAMERA_ROTATION_OFFSETS[2];
-        //TODO: When rotator class has been made, do the same for the turret.
-        //h += turret.getHeading();
-
+    public double getX () {
+        return x;
     }
 
-//causing a npe. Assumed that we can only use telemetry methods in opmode?
-//    public void telemetryUpdate() {
-//        localize();
-//        telemetry.addData("Camera defined x", x);
-//        telemetry.addData("Camera defined y", y);
-//        telemetry.addData("Camera defined h", h);
-//        telemetry.update();
-//    }
+    public double getY () {
+        return y;
+    }
 
-}
+    public double getH () {
+        return h;
+    }
+
+    }

@@ -65,10 +65,14 @@ public class AprilTagReviewer {
     }
 
     private void initAprilTag() {
-        aprilTag = AprilTagProcessor.easyCreateWithDefaults();
+        aprilTag = new AprilTagProcessor.Builder().build();
 
         // Create the vision portal the easy way.
-            visionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
+        VisionPortal.Builder builder = new VisionPortal.Builder();
+        builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        builder.addProcessor(aprilTag);
+        visionPortal = builder.build();
+
     }
 //too lazy to find out why this was erroring ngl
 //    private void getCameraSetting() {
